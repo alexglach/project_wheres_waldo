@@ -1,7 +1,19 @@
 var AJAX = (function() {
 
-  var newTag = function(x, y, name) {
-    $.post("/tags", )
+  var newTag = function(x, y, name, callback) {
+    var data = {
+      character_name: name,
+      x_location: x,
+      y_location: y,
+      score_id: parseInt(window.location.href.split('/').pop())
+    }
+    $.post({
+      url: "/tags", 
+      data: data,
+      success: function(response){
+        callback(response);
+      }
+    })
   }
 
   return {
@@ -25,20 +37,20 @@ var photoMethods = {
     var leftCoord = event.pageX - 50 + "px";
     var topCoord = event.pageY - 25 + "px";
 
-    var container = $('<div/>')
+    var frame = $('<div/>')
                     .addClass('fixed-container')
                     .css('top', topCoord)
                     .css('left', leftCoord);
 
-    $('#photo-div').append(container);
+    $('#photo-div').append(frame);
 
 
-    container.append(
+    frame.append(
       $('<div/>')
       .addClass('fixed-tags')
       );
 
-    container.append(friendList);
+    frame.append(friendList);
 
     $('img').off('click', photoMethods.fixTargetEvent);
 
@@ -47,31 +59,49 @@ var photoMethods = {
       // whose x_location and y_location are the center of the fixTarget div
       // i.e. leftCoord, leftCoord
 
-      AJAX.newTag(leftCoord, topCoord, e.target.text);
+      frame.remove();
 
+      AJAX.newTag(leftCoord, topCoord, e.target.text,
+                  photoMethods.addNewTagToDOM);
 
-      var list = $(e.currentTarget);
-      list.parent().addClass('selectedCont');
+      // var list = $(e.currentTarget);
+      // list.parent().addClass('selectedCont');
 
-      var currentEle = $(e.target);
-      currentEle.addClass("selected");
+      // var currentEle = $(e.target);
+      // currentEle.addClass("selected");
 
-      list.after(
-        $('<li/>')
-        .addClass('remove-tag')
-        .text("Remove tag")
-        );
+      // list.after(
+      //   $('<li/>')
+      //   .addClass('remove-tag')
+      //   .text("Remove tag")
+      //   );
 
-      $('ul').children().filter(function(_, ele) {
-        ele = $(ele);
-        return !ele.hasClass('selected');
-      }).hide();
+      // $('ul').children().filter(function(_, ele) {
+      //   ele = $(ele);
+      //   return !ele.hasClass('selected');
+      // }).hide();
       $('img').on('click', photoMethods.fixTargetEvent);
 
     });
 
     $('img').on('click', photoMethods.allowTagCancel);
 
+  },
+
+  addNewTagToDOM: function(tagObj) {
+    var leftCoord = tagObj.x_location;
+    var topCoord = tagObj.y_location;
+
+    var frame = $('<div/>')
+                    .addClass('fixed-container')
+                    .css('top', topCoord)
+                    .css('left', leftCoord);
+
+    $('#photo-div').append(frame);
+    var $friendList = $("<ul class='friends'></ul>");
+    var $newTag = $("<li></li>").text(tagObj.character_name);
+    $friendList.append($newTag);
+    frame.append($friendList);
   },
 
   allowTagCancel: function() {
