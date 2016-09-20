@@ -3,9 +3,9 @@ var photoMethods = {
   friends: ["Waldo", "Wenda", "Odlaw", "Wizard Whitebeard", "Woof"],
 
   fixTargetEvent: function(event) {
-    var friendList = $("<ul class='friends'></ul>");
+    var friendList = $("<ul class='friends gameboard'></ul>");
     for (var i = 0; i< photoMethods.friends.length; i++) {
-      var listItem = $("<li/>").text(photoMethods.friends[i]);
+      var listItem = $("<li/>").text(photoMethods.friends[i])
       friendList.append(listItem);
     }
 
@@ -75,4 +75,7 @@ var photoMethods = {
 
 $(document).ready(function() {
   photoMethods.fixTarget();
+  $('.gameboard').on("hover", function() {
+    $(".fixed-container").show();
+  })
 });
