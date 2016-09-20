@@ -4,7 +4,7 @@ class TagsController < ApplicationController
     @tag = Tag.new(whitelisted_params);
 
     if @tag.save
-      delete_character_from_score(params) 
+      delete_character_from_score(whitelisted_params) 
       respond_to do |format|
         format.html {}
         format.json { render json: @tag, status: 200 }
@@ -35,9 +35,9 @@ class TagsController < ApplicationController
   end
 
   def delete_character_from_score(params)
-    score = Score.find(params[:id])
+    score = Score.find(params[:score_id])
     character = params[:character_name]
-    score.characters.where(name: character).destroy
+    score.characters.where("name LIKE ?", character).destroy
   end
 
 end

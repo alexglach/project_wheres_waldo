@@ -26,22 +26,22 @@ var AJAX = (function() {
       },
       dataType: "json",
       success: function(response) {
-        console.log(response);
         callback(response)
       },
     })
   };
 
-  var getCharacters = function(scoreID) {
+  var getCharacters = function(scoreID, callback) {
     $.get({
-      url: "/scores",
-      data: {
-        id: scoreID
-      },
+      url: "/scores/" + scoreID,
+      // data: {
+      //   id: scoreID
+      // },
       dataType: "json",
       success: function(response) {
-        return response;
-      },
+        console.log(response);
+        callback(response);
+      }
     })
   };
 
@@ -57,15 +57,24 @@ var AJAX = (function() {
 var photoMethods = {
 
   friends: [],
+  scoreID: parseInt(window.location.href.split("/").pop()),
 
   updateFriends: function(){
-    friends = AJAX.getCharacters(parseInt(window.location.href.split("/").pop()));
+    AJAX.getCharacters(photoMethods.scoreID, photoMethods.setFriendsArray);
+    console.log(photoMethods.friends);
+  },
+
+  setFriendsArray: function(response) {
+    console.log(response);
+    for (var i = 0; i < response.length; i += 1) {
+      photoMethods.friends[i] = response[i].name;
+    }
   },
 
   fixTargetEvent: function(event) {
     var friendList = $("<ul class='friends' id='current-ul'></ul>");
     for (var i = 0; i< photoMethods.friends.length; i++) {
-      var listItem = $("<li></li>").text(photoMethods.friends[i].name)
+      var listItem = $("<li></li>").text(photoMethods.friends[i])
       friendList.append(listItem);
     }
 
@@ -109,7 +118,7 @@ var photoMethods = {
   },
 
   loadTags: function() {
-    AJAX.getTags(parseInt(window.location.href.split("/").pop()), photoMethods.placeSavedTags);
+    AJAX.getTags(photoMethods.scoreID, photoMethods.placeSavedTags);
 
   },
 
