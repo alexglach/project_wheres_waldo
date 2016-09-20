@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   
-  root to: "photos#show"
+  root to: "scores#index"
+
+  resources :scores
 
   get 'photos/show'
 

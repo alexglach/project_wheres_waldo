@@ -5,14 +5,16 @@ routes: Photo (show)
         Tag (create, destroy)
         Score (create)
 
-Build a basic controller and view which contains a photo.
 
-When the user clicks on the photo, it should pop up a "Targeting Box" which surrounds the click area.
 
-There should be a dropdown menu where the user can select from the available characters to associate with that Tag.
+Set up the Rails models needed to persist a given Tag and to manage the list of available characters. You may be interested in setting up a custom validator for Tag validity...
 
-When the user selects a character, it should create a Tag associated with that character at that location. Just do this on the front end for now.
+Make your front-end Tag event send an AJAX request to the back end which persists that event.
 
-When the user hovers over the photo, all current Tags should be visible. When the mouse leaves the photo, Tags should disappear and the photo should look normal.
+Return the proper object or template and update the DOM with the successful Tag only upon successful persisting of the event.
 
-For now, refreshing the page will reset the photo Tags. That's okay.
+Verify that Tag now persists the data in your Rails app and only updates the DOM on success.
+
+Set up your app to load all Tags on the image when the page refreshes.
+
+Implement a DELETE button or link on each Tag which will remove the persisted Tag and then remove the Tag from the DOM upon success.
