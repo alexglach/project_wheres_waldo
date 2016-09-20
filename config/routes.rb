@@ -1,5 +1,11 @@
 Rails.application.routes.draw do
+  
+  root to: "photos#show"
+
   get 'photos/show'
+
+  resources :tags, only: [:create, :destroy]
+  resources :scores, only: [:create]
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
