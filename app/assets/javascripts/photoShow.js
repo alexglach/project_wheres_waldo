@@ -20,7 +20,10 @@ var AJAX = (function() {
 
   var getTags = function(scoreID, callback) {
     $.get({
-      url: "/scores/" + scoreID,
+      url: "/tags", // "/scores/" + scoreID,
+      data: {
+        id: scoreID
+      },
       dataType: "json",
       success: function(response) {
         console.log(response);

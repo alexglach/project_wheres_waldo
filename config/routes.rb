@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   get 'photos/show'
 
-  resources :tags, only: [:create, :destroy]
+  resources :tags, only: [:create, :destroy, :index]
   resources :scores, only: [:create]
 
   # The priority is based upon order of creation: first created -> highest priority.
