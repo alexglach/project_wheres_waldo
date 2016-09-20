@@ -1,0 +1,18 @@
+models: Tag, Photo, Score
+
+
+routes: Photo (show)
+        Tag (create, destroy)
+        Score (create)
+
+Build a basic controller and view which contains a photo.
+
+When the user clicks on the photo, it should pop up a "Targeting Box" which surrounds the click area.
+
+There should be a dropdown menu where the user can select from the available characters to associate with that Tag.
+
+When the user selects a character, it should create a Tag associated with that character at that location. Just do this on the front end for now.
+
+When the user hovers over the photo, all current Tags should be visible. When the mouse leaves the photo, Tags should disappear and the photo should look normal.
+
+For now, refreshing the page will reset the photo Tags. That's okay.
