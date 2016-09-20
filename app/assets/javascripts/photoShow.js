@@ -39,7 +39,6 @@ var AJAX = (function() {
       // },
       dataType: "json",
       success: function(response) {
-        console.log(response);
         callback(response);
       }
     })
@@ -61,22 +60,26 @@ var photoMethods = {
 
   updateFriends: function(){
     AJAX.getCharacters(photoMethods.scoreID, photoMethods.setFriendsArray);
-    console.log(photoMethods.friends);
   },
 
   setFriendsArray: function(response) {
+    console.log("Set friends array response: ");
     console.log(response);
+    photoMethods.friends = [];
     for (var i = 0; i < response.length; i += 1) {
       photoMethods.friends[i] = response[i].name;
     }
+
   },
 
   fixTargetEvent: function(event) {
     var friendList = $("<ul class='friends' id='current-ul'></ul>");
+    console.log("Fix target Event: " + photoMethods.friends)
     for (var i = 0; i< photoMethods.friends.length; i++) {
       var listItem = $("<li></li>").text(photoMethods.friends[i])
       friendList.append(listItem);
     }
+
 
     var leftCoord = event.pageX - 50 + "px";
     var topCoord = event.pageY - 25 + "px";
@@ -108,7 +111,7 @@ var photoMethods = {
 
       AJAX.newTag(leftCoord, topCoord, e.target.innerHTML,
                   photoMethods.addNewTagToDOM);
-
+      photoMethods.updateFriends();
       $('img').on('click', photoMethods.fixTargetEvent);
 
     });
@@ -144,6 +147,7 @@ var photoMethods = {
     var $newTag = $("<li></li>").text(tagObj.character_name);
     $friendList.append($newTag);
     frame.append($friendList);
+
   },
 
   allowTagCancel: function() {

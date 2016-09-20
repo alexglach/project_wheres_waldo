@@ -37,7 +37,8 @@ class TagsController < ApplicationController
   def delete_character_from_score(params)
     score = Score.find(params[:score_id])
     character = params[:character_name]
-    score.characters.where("name LIKE ?", character).destroy
+    
+    score.characters.where("name LIKE ?", character).destroy_all
   end
 
 end
