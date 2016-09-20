@@ -3,15 +3,11 @@ var photoMethods = {
   friends: ["Waldo", "Wenda", "Odlaw", "Wizard Whitebeard", "Woof"],
 
   fixTargetEvent: function(event) {
-    var friendList = $("<ul class='friends gameboard'></ul>");
+    var friendList = $("<ul class='friends'></ul>");
     for (var i = 0; i< photoMethods.friends.length; i++) {
-      var listItem = $("<li/>").text(photoMethods.friends[i])
+      var listItem = $("<li></li>").text(photoMethods.friends[i])
       friendList.append(listItem);
     }
-
-    $('.tagger').hide();
-
-    $('img').off('mousemove', photoMethods.mousemoveEvent);
 
     var leftCoord = event.pageX - 50 + "px";
     var topCoord = event.pageY - 25 + "px";
@@ -21,7 +17,7 @@ var photoMethods = {
                     .css('top', topCoord)
                     .css('left', leftCoord);
 
-    $('body').append(container);
+    $('#photo-div').append(container);
 
 
     container.append(
@@ -75,7 +71,16 @@ var photoMethods = {
 
 $(document).ready(function() {
   photoMethods.fixTarget();
-  $('.gameboard').on("hover", function() {
+  $(".fixed-container").hide();
+  $('#photo-div').mouseenter(function(){
     $(".fixed-container").show();
-  })
+  });
+  $('#photo-div').mouseleave(function(){
+    $(".fixed-container").hide();
+  });
+  // $('#photo-div').hover(function() {
+  //   $(".fixed-container").show();
+  // }, function(){
+  //   $(".fixed-container").hide();
+  // })
 });
