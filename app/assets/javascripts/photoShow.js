@@ -32,9 +32,23 @@ var AJAX = (function() {
     })
   };
 
+  var getCharacters = function(scoreID) {
+    $.get({
+      url: "/scores",
+      data: {
+        id: scoreID
+      },
+      dataType: "json",
+      success: function(response) {
+        return response;
+      },
+    })
+  };
+
   return {
     newTag: newTag,
-    getTags: getTags
+    getTags: getTags,
+    getCharacters: getCharacters
   }
 
 })();
@@ -42,12 +56,16 @@ var AJAX = (function() {
 
 var photoMethods = {
 
-  friends: ["Waldo", "Wenda", "Odlaw", "Wizard Whitebeard", "Woof"],
+  friends: [],
+
+  updateFriends: function(){
+    friends = AJAX.getCharacters(parseInt(window.location.href.split("/").pop()));
+  },
 
   fixTargetEvent: function(event) {
-    var friendList = $("<ul class='friends'></ul>");
+    var friendList = $("<ul class='friends' id='current-ul'></ul>");
     for (var i = 0; i< photoMethods.friends.length; i++) {
-      var listItem = $("<li></li>").text(photoMethods.friends[i])
+      var listItem = $("<li></li>").text(photoMethods.friends[i].name)
       friendList.append(listItem);
     }
 
@@ -71,10 +89,13 @@ var photoMethods = {
 
     $('img').off('click', photoMethods.fixTargetEvent);
 
-    $('ul').click(function(e) {
-
-      console.log(e.target.innerHTML);
-      frame.remove();
+    $('#current-ul').click(function(e) {
+      $(e.target).addClass('selected')
+      var $liToDelete = $('#current-ul li').filter( function(){
+        return (!$(this).hasClass('selected'));
+      });
+      $liToDelete.remove();
+      $('#current-ul').attr('id', "");
 
       AJAX.newTag(leftCoord, topCoord, e.target.innerHTML,
                   photoMethods.addNewTagToDOM);
@@ -141,5 +162,6 @@ $(document).ready(function() {
   $('#photo-div').mouseleave(function(){
     $(".fixed-container").hide();
   });
+  photoMethods.updateFriends();
 
 });

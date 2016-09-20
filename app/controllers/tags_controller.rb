@@ -3,7 +3,8 @@ class TagsController < ApplicationController
   def create
     @tag = Tag.new(whitelisted_params);
 
-    if @tag.save 
+    if @tag.save
+      delete_character_from_score(params) 
       respond_to do |format|
         format.html {}
         format.json { render json: @tag, status: 200 }
@@ -31,6 +32,12 @@ class TagsController < ApplicationController
 
   def whitelisted_params
     params.permit(:character_name, :x_location, :y_location, :score_id)
+  end
+
+  def delete_character_from_score(params)
+    score = Score.find(params[:id])
+    character = params[:character_name]
+    score.characters.where(name: character).destroy
   end
 
 end
