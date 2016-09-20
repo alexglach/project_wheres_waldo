@@ -1,3 +1,16 @@
+var AJAX = (function() {
+
+  var newTag = function(x, y, name) {
+    $.post("/tags", )
+  }
+
+  return {
+    newTag: newTag
+  }
+
+})();
+
+
 var photoMethods = {
 
   friends: ["Waldo", "Wenda", "Odlaw", "Wizard Whitebeard", "Woof"],
@@ -30,6 +43,12 @@ var photoMethods = {
     $('img').off('click', photoMethods.fixTargetEvent);
 
     $('ul').click(function(e) {
+      // send an AJAX request registering a tag whose character_name attribute is the e.target.text();
+      // whose x_location and y_location are the center of the fixTarget div
+      // i.e. leftCoord, leftCoord
+
+      AJAX.newTag(leftCoord, topCoord, e.target.text);
+
 
       var list = $(e.currentTarget);
       list.parent().addClass('selectedCont');
