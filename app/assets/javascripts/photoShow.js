@@ -10,14 +10,28 @@ var AJAX = (function() {
     $.post({
       url: "/tags", 
       data: data,
+      dataType: "json",
+      // contentType: "application/json",
       success: function(response){
         callback(response);
       }
     })
-  }
+  };
+
+  var getTags = function(scoreID, callback) {
+    $.get({
+      url: "/scores/" + scoreID,
+      dataType: "json",
+      success: function(response) {
+        console.log(response);
+        callback(response)
+      },
+    })
+  };
 
   return {
-    newTag: newTag
+    newTag: newTag,
+    getTags: getTags
   }
 
 })();
@@ -55,31 +69,13 @@ var photoMethods = {
     $('img').off('click', photoMethods.fixTargetEvent);
 
     $('ul').click(function(e) {
-      // send an AJAX request registering a tag whose character_name attribute is the e.target.text();
-      // whose x_location and y_location are the center of the fixTarget div
-      // i.e. leftCoord, leftCoord
 
+      console.log(e.target.innerHTML);
       frame.remove();
 
-      AJAX.newTag(leftCoord, topCoord, e.target.text,
+      AJAX.newTag(leftCoord, topCoord, e.target.innerHTML,
                   photoMethods.addNewTagToDOM);
 
-      // var list = $(e.currentTarget);
-      // list.parent().addClass('selectedCont');
-
-      // var currentEle = $(e.target);
-      // currentEle.addClass("selected");
-
-      // list.after(
-      //   $('<li/>')
-      //   .addClass('remove-tag')
-      //   .text("Remove tag")
-      //   );
-
-      // $('ul').children().filter(function(_, ele) {
-      //   ele = $(ele);
-      //   return !ele.hasClass('selected');
-      // }).hide();
       $('img').on('click', photoMethods.fixTargetEvent);
 
     });
@@ -88,6 +84,18 @@ var photoMethods = {
 
   },
 
+  loadTags: function() {
+    AJAX.getTags(parseInt(window.location.href.split("/").pop()), photoMethods.placeSavedTags);
+
+  },
+
+  placeSavedTags: function(savedTags) {
+    for (var i = 0; i < savedTags.length; i += 1) {
+      photoMethods.addNewTagToDOM(savedTags[i]);
+    }
+  },
+
+
   addNewTagToDOM: function(tagObj) {
     var leftCoord = tagObj.x_location;
     var topCoord = tagObj.y_location;
@@ -95,7 +103,8 @@ var photoMethods = {
     var frame = $('<div/>')
                     .addClass('fixed-container')
                     .css('top', topCoord)
-                    .css('left', leftCoord);
+                    .css('left', leftCoord)
+                    .append($('<div/>').addClass('fixed-tags'));
 
     $('#photo-div').append(frame);
     var $friendList = $("<ul class='friends'></ul>");
@@ -116,10 +125,12 @@ var photoMethods = {
     $('img').on('click', photoMethods.fixTargetEvent);
   },
 
+
 };
 
 $(document).ready(function() {
   photoMethods.fixTarget();
+  photoMethods.loadTags();
   $(".fixed-container").hide();
   $('#photo-div').mouseenter(function(){
     $(".fixed-container").show();
@@ -127,9 +138,5 @@ $(document).ready(function() {
   $('#photo-div').mouseleave(function(){
     $(".fixed-container").hide();
   });
-  // $('#photo-div').hover(function() {
-  //   $(".fixed-container").show();
-  // }, function(){
-  //   $(".fixed-container").hide();
-  // })
+
 });

@@ -6,6 +6,12 @@ class ScoresController < ApplicationController
 
   def show
     @score = Score.find(params[:id])
+    @tags = @score.tags
+
+    respond_to do |format|
+      format.html {}
+      format.json { render json: @tags, status: 200}
+    end
   end
 
   def create
