@@ -78,15 +78,10 @@ var photoMethods = {
                     .addClass('fixed-container')
                     .css('top', topCoord)
                     .css('left', leftCoord);
-
     $('#photo-div').append(frame);
-
-
     frame.append(
-      $('<div/>')
-      .addClass('fixed-tags')
+        $('<div/>').addClass('fixed-tags')
       );
-
     frame.append(friendList);
   },
 
@@ -98,45 +93,32 @@ var photoMethods = {
       });
       $liToDelete.remove();
       $('#current-ul').attr('id', "");
-
       AJAX.newTag(leftCoord, topCoord, e.target.innerHTML,
                   photoMethods.addNewTagToDOM);
-
-
-      // var $thisContainer = $('.fixed-container').last().
-
-
-      
-
       $('img').on('click', photoMethods.fixTargetEvent);
-
     });
   },
 
-  fixTargetEvent: function(event) {
-
+  createFriendList: function() {
     var friendList = $("<ul class='friends' id='current-ul'></ul>");
-    console.log("Fix target Event: " + photoMethods.friends)
     for (var i = 0; i< photoMethods.friends.length; i++) {
       var listItem = $("<li></li>").text(photoMethods.friends[i])
       friendList.append(listItem);
     }
+    return friendList;
+  },
 
-
+  fixTargetEvent: function(event) {
+    if (photoMethods.friends.length === 0) {
+      return;
+    }
+    var friendList = photoMethods.createFriendList();
     var topCoord = event.pageY - 25 + "px";
     var leftCoord = event.pageX - 50 + "px";
-
     photoMethods.createFrame(topCoord, leftCoord, friendList);
-
     photoMethods.createNewTags(leftCoord, topCoord);
-    
-
     $('img').off('click', photoMethods.fixTargetEvent);
-
-    
-
     $('img').on('click', photoMethods.allowTagCancel);
-
   },
 
   loadTags: function() {
@@ -154,19 +136,10 @@ var photoMethods = {
   addNewTagToDOM: function(tagObj) {
     var leftCoord = tagObj.x_location;
     var topCoord = tagObj.y_location;
-
-    var frame = $('<div/>')
-                    .addClass('fixed-container')
-                    .css('top', topCoord)
-                    .css('left', leftCoord)
-                    .append($('<div/>').addClass('fixed-tags'));
-
-    $('#photo-div').append(frame);
     var $friendList = $("<ul class='friends'></ul>");
     var $newTag = $("<li></li>").text(tagObj.character_name);
     $friendList.append($newTag);
-    frame.append($friendList);
-
+    photoMethods.createFrame(topCoord, leftCoord, $friendList)
     photoMethods.updateFriends();
   },
 
@@ -182,19 +155,25 @@ var photoMethods = {
     $('img').on('click', photoMethods.fixTargetEvent);
   },
 
+  setHoverListener: function() {
+    $(".fixed-container").hide();
+    $('#photo-div').mouseenter(function(){
+      $(".fixed-container").show();
+    });
+    $('#photo-div').mouseleave(function(){
+      $(".fixed-container").hide();
+    });
+  },
+
+  init: function(){
+    photoMethods.fixTarget();
+    photoMethods.loadTags();
+    photoMethods.setHoverListener();
+    photoMethods.updateFriends();
+  }
 
 };
 
 $(document).ready(function() {
-  photoMethods.fixTarget();
-  photoMethods.loadTags();
-  $(".fixed-container").hide();
-  $('#photo-div').mouseenter(function(){
-    $(".fixed-container").show();
-  });
-  $('#photo-div').mouseleave(function(){
-    $(".fixed-container").hide();
-  });
-  photoMethods.updateFriends();
-
+  photoMethods.init();
 });
